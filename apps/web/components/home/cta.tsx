@@ -2,7 +2,8 @@ import React from "react";
 import { MaxWidthWrapper } from "../max-width-wrapper";
 import { Phone } from "../phone";
 import { CheckIcon } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
+import Link from "next/link";
 
 function CTA() {
   return (
@@ -36,7 +37,7 @@ function CTA() {
             </span>
           ))}
         </div>
-        <Button size="lg">Create Your Case Now</Button>
+        <Link className = {buttonVariants({size: "lg"})} href={"/create"}>Create Your Case Now</Link>
       </div>
     </MaxWidthWrapper>
   );

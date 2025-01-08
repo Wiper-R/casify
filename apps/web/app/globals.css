@@ -14,6 +14,7 @@
 
 body {
   color: var(--foreground);
+	background-color: white;
   background-image: url("/background-texture.png");
 }
 

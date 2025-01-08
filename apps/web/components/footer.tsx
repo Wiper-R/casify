@@ -3,9 +3,11 @@ import { MaxWidthWrapper } from "./max-width-wrapper";
 
 export function Footer() {
   return (
-    <footer className="bg-white text-gray-700 text-sm">
+    <footer className="bg-white text-gray-700 text-sm mt-auto">
       <MaxWidthWrapper className="flex justify-between py-6">
-        <span>&copy; 2025 Casify, Inc. All Rights Reserved</span>
+        <span>
+          &copy; {new Date().getFullYear()} Casify, Inc. All Rights Reserved
+        </span>
         <ul className="flex items-center gap-4">
           <li>
             <Link href="/">Terms</Link>

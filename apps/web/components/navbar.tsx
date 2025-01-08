@@ -7,7 +7,7 @@ import { Divider } from "./divider";
 
 export function Navbar() {
   return (
-    <header className="bg-background/10 p-4 shadow backdrop-blur">
+    <header className="z-10 relative bg-background/10 p-4 shadow backdrop-blur">
       <MaxWidthWrapper className="flex justify-between">
         <Image src={Casify} alt="Casify" width={40} />
         <ul className="flex gap-4">
