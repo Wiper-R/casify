@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 0 0 0;
+    --primary: 255, 125, 12;
+    --primary-foreground: 255 255 255;
+    --accent: 240 240 240;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background-image: url("/background-texture.png");
+}
+
+.animate-marque {
+  animation: marque var(--marque-duration) linear infinite;
+}
+
+@keyframes marque {
+  100% {
+    transform: translateY(-50%);
+  }
+}
