@@ -14,6 +14,7 @@ import { router as usersRouter } from "./users";
 import { router as ordersRouter } from "./orders";
 import { auth } from "../../middleware/auth";
 import { generateRandomCode } from "../../util";
+import { resend } from "../../resend";
 export const router = Router();
 
 router.post("/signin", async (req, res) => {
@@ -59,6 +60,20 @@ router.post("/signout", auth, async (_, res) => {
   res.json({});
 });
 
+async function sendCodeEmail(to: string, code: string, validUntil: Date) {
+  const { data, error } = await resend.emails.send({
+    from: "Casify <hello@seekhcode.me>",
+    to: [to],
+    subject: "Password Reset Request",
+    html: `
+        <h3>Password Reset Request</h3>
+        <p>We have received a password reset request for your account. If this wasn't you, please ignore this email.</p>
+        <p>Your reset code: <strong>${code}</strong></p>
+        <p>This code is valid until: <strong>${validUntil.toLocaleString()}</strong></p>
+      `,
+  });
+}
+
 router.post("/get-reset-code", async (req, res) => {
   const { email } = await GetResetCode.parseAsync(req.body);
   const user = await prisma.user.findUnique({ where: { email } });
@@ -76,16 +91,20 @@ router.post("/get-reset-code", async (req, res) => {
         where: { email },
         data: { code, validUntil },
       });
-      res.json({});
+      await sendCodeEmail(email, code, validUntil);
+      res.json({ validUntil });
       return;
     }
-    if (exists) {
-      res.status(400).json({ message: "Wait before generating other code" });
-      return;
+    var resetCode: { validUntil: Date };
+    if (!exists) {
+      resetCode = await prisma.resetCode.create({
+        data: { email, code, validUntil },
+      });
+      await sendCodeEmail(email, code, validUntil);
+    } else {
+      resetCode = exists;
     }
-
-    await prisma.resetCode.create({ data: { email, code, validUntil } });
-    res.json({});
+    res.json({ validUntil: resetCode.validUntil });
     return;
   } catch (e) {
     res.status(500).json({ message: "Something went wrong" });
@@ -97,8 +116,10 @@ router.post("/validate-reset-code", async (req, res) => {
   const valid = await prisma.resetCode.findUnique({ where: { email, code } });
   if (valid) {
     res.json({ valid: true });
+    return;
   }
   res.status(400).json({ valid: false });
+  return;
 });
 
 router.post("/new-password", async (req, res) => {

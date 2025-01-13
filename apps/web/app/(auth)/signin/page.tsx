@@ -47,7 +47,10 @@ export default function SigninPage() {
         </div>
         <Button size={"lg"}>Login</Button>
         <Link
-          href={`/reset-password?email=${form.watch("email")}`}
+          href={
+            "/reset-password" +
+            (form.watch("email") ? `?email=${form.watch("email")}` : "")
+          }
           className="ml-auto text-sm hover:underline"
         >
           Forgot password

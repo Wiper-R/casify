@@ -1,8 +1,11 @@
-export function generateRandomCode(length: number) {
-  var c = "";
+export function generateRandomCode(length: number): string {
   const chars = "abcdefghijklmnopqrstuvwxyz";
+  let code = "";
+
   for (let i = 0; i < length; i++) {
-    c += chars[Math.round(Math.random() * chars.length)];
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    code += chars[randomIndex];
   }
-  return c;
+
+  return code;
 }
