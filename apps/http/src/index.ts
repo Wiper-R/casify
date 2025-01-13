@@ -6,7 +6,14 @@ import env from "./env";
 
 const app = express();
 app.use(cookieParser());
-app.use(express.json());
+app.use(
+  express.json({
+    verify(req, _, buf) {
+      // @ts-ignore
+      req.rawBody = buf;
+    },
+  }),
+);
 
 // Routers
 app.use("/api/v1/", v1Router);

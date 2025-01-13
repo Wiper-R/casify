@@ -14,13 +14,13 @@ function Column({
   const containerRef = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
-      console.log(entries);
       setContainerHeight(entries[0].target.clientHeight);
     });
+
     observer.observe(containerRef.current);
 
     return () => {
-      observer.unobserve(containerRef.current);
+      if (containerRef.current) observer.unobserve(containerRef.current);
     };
   }, []);
   const cssParameters = {
@@ -44,7 +44,10 @@ function Column({
 function Reviews() {
   return (
     <MaxWidthWrapper className="relative">
-      <img src="/what-people-are-buying.png" className="absolute top-20 -left-20" />
+      <img
+        src="/what-people-are-buying.png"
+        className="absolute top-20 -left-20"
+      />
       <div className="mx-auto grid grid-cols-3 place-items-center max-w-screen-lg gap-10 overflow-hidden relative h-[800px] max-h-[150vh]">
         <Column
           reviews={["/samples/1.png", "/samples/4.jpeg", "/samples/5.jpeg"]}

@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { MaxWidthWrapper } from "./max-width-wrapper";
 
 type Step = {
   title: string;
@@ -33,7 +34,7 @@ const STEPS: Step[] = [
 export function Steps() {
   const pathname = usePathname();
   return (
-    <div className="flex justify-center shadow w-fit bg-white mx-auto">
+    <MaxWidthWrapper className="grid grid-cols-3 p-0">
       {STEPS.map((sec, i) => {
         const isCurrent = pathname.endsWith(sec.url);
         const isCompleted = STEPS.slice(i + 1).some((step) =>
@@ -77,6 +78,6 @@ export function Steps() {
           </div>
         );
       })}
-    </div>
+    </MaxWidthWrapper>
   );
 }

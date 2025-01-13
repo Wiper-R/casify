@@ -37,7 +37,12 @@ function CTA() {
             </span>
           ))}
         </div>
-        <Link className = {buttonVariants({size: "lg"})} href={"/create"}>Create Your Case Now</Link>
+        <Link
+          className={buttonVariants({ size: "lg" })}
+          href={"/create/upload"}
+        >
+          Create Your Case Now
+        </Link>
       </div>
     </MaxWidthWrapper>
   );

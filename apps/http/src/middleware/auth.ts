@@ -9,8 +9,12 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
     return;
   }
   try {
-    const payload = jwt.verify(token, env.JWT_SECRET);
-    req.userId = payload.sub as string;
+    const payload = jwt.verify(token, env.JWT_SECRET) as {
+      sub: string;
+      role: "admin" | "user";
+    };
+    req.userId = payload.sub;
+    req.role = payload.role;
     next();
   } catch (e) {
     res.status(401).json({ message: "Unauthorized" });
