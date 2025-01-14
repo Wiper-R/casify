@@ -21,6 +21,7 @@ export function auth({ check = true }: { check?: boolean }) {
       req.role = payload.role;
       next();
     } catch (e) {
+      if (!check) return next();
       res.status(401).json({ message: "Unauthorized" });
     }
   };

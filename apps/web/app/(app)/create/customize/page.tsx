@@ -22,6 +22,8 @@ export default async function Page({
       />
     );
   } catch (e) {
+    console.log("Failed to get order");
+    console.log(e);
     notFound();
   }
 }
