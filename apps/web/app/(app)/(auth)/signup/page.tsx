@@ -18,9 +18,8 @@ export default function SignupPage() {
   });
   async function onSubmit(values: SignupSchema) {
     try {
-      console.log("On submit called");
       const res = await apiClient.post("/signup", values);
-      console.log(res.data);
+      router.push("/signin");
     } catch (e) {
       // TODO: Handle zod errors
     }

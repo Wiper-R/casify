@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import CustomizePage from "./customize-page";
-import apiClient from "@/lib/api-client";
-import { Order } from "@repo/types";
+import { getOrder } from "@/app/actions";
 
 export default async function Page({
   searchParams,
@@ -13,8 +12,7 @@ export default async function Page({
     notFound();
   }
   try {
-    const res = await apiClient.get(`/orders/${id}`);
-    const order: Order = res.data;
+    const order = await getOrder(id);
     if (order.Customization) notFound();
     return (
       <CustomizePage

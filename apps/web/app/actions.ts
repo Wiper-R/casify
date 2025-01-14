@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { unstable_noStore as noStore } from "next/cache";
 import apiClient from "@/lib/api-client";
-import { User } from "@repo/types";
+import { Order, User } from "@repo/types";
 
 export async function auth() {
   noStore();
@@ -17,8 +17,17 @@ export async function auth() {
         Authorization: `Bearer ${token}`,
       },
     });
-    return res.data as User;
+    return { user: res.data as User };
   } catch (e) {
-    return null;
+    return { user: null };
   }
+}
+
+export async function getOrder(id: string) {
+  // noStore();
+  const token = (await cookies()).get("token")?.value;
+  const res = await apiClient.get(`/orders/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data as Order;
 }

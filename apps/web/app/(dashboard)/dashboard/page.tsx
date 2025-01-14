@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/app/auth";
+import { auth } from "@/app/actions";
+import Dashboard from "./dashboard";
 
 export default async function Page() {
-  const user = await auth();
+  const { user } = await auth();
   if (!user) redirect("/signin");
-  return `Hello, ${user.name}`;
+  return <Dashboard user={user} />;
 }

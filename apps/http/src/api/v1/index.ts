@@ -55,7 +55,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/signout", auth, async (_, res) => {
+router.post("/signout", auth({}), async (_, res) => {
   res.cookie("token", "", { httpOnly: true, expires: new Date() });
   res.json({});
 });

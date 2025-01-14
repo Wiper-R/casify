@@ -33,15 +33,10 @@ export function Navbar() {
               <li className={buttonVariants({ variant: "ghost" })}>
                 <Link href="/logout">Logout</Link>
               </li>
-              {auth.user.role == "admin" ? (
-                <li className={buttonVariants({ variant: "ghost" })}>
-                  <Link href="/dashboard">Dashboard</Link>
-                </li>
-              ) : (
-                <li className={buttonVariants({ variant: "ghost" })}>
-                  <Link href="/dashboard">Dashboard</Link>
-                </li>
-              )}
+
+              <li className={buttonVariants({ variant: "ghost" })}>
+                <Link href="/dashboard">Dashboard</Link>
+              </li>
             </>
           )}
           <Separator orientation="vertical" className="h-8 mx-5" />

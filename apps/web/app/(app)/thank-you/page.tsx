@@ -1,9 +1,8 @@
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
-import apiClient from "@/lib/api-client";
 import { Order } from "@repo/types";
 import { notFound } from "next/navigation";
 import PhoneView from "@/components/phone-view";
-import { BASE_PRICE, FINISHES, MATERIALS } from "@repo/constants";
+import { getOrder } from "@/app/actions";
 
 export default async function Page({
   searchParams,
@@ -15,8 +14,7 @@ export default async function Page({
     notFound();
   }
   try {
-    const res = await apiClient.get(`/orders/${id}`);
-    const order: Order = res.data;
+    const order = await getOrder(id);
     if (order.state != "paid") {
       notFound();
     }
@@ -29,12 +27,6 @@ export default async function Page({
 
 function Thankyou({ order }: { order: Order }) {
   const Address = order.Address!;
-  const material = MATERIALS.options.find(
-    (m) => m.value == order.Customization?.material,
-  )!;
-  const finish = FINISHES.options.find(
-    (f) => f.value == order.Customization?.finish,
-  )!;
   return (
     <MaxWidthWrapper className="max-w-5xl py-10">
       <div className="space-y-4">

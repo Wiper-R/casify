@@ -20,7 +20,6 @@ export default function SigninPage() {
   async function onSubmit(values: SigninSchema) {
     try {
       const res = await apiClient.post("/signin", values);
-      console.log(res.data);
       refetch();
     } catch (e) {}
   }

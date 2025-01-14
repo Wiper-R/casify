@@ -24,7 +24,7 @@ router.post("/upload", async (_, res) => {
   res.json({ timestamp, signature });
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth({ check: false }), async (req, res) => {
   const data = await CreateOrderSchema.parseAsync(req.body);
   const order: Order = await prisma.order.create({
     data: {
@@ -37,11 +37,14 @@ router.post("/", async (req, res) => {
   res.json(order);
 });
 
-router.put("/:orderId", async (req, res) => {
+router.put("/:orderId", auth({ check: false }), async (req, res) => {
   const orderId = req.params.orderId;
   const data = await UpdateOrderSchema.parseAsync(req.body);
   const order = await prisma.order.update({
-    where: { id: orderId },
+    where: {
+      id: orderId,
+      OR: [{ userId: null }, { userId: req.userId }],
+    },
     data: {
       Customization: {
         create: {
@@ -50,15 +53,6 @@ router.put("/:orderId", async (req, res) => {
       },
     },
   });
-  res.json(order);
-});
-
-router.get("/:orderId", async (req, res) => {
-  const orderId = req.params.orderId;
-  const order: Order | null = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: { Customization: true, Address: true, User: true },
-  });
   if (!order) {
     res.status(404).json({ message: "Order not found" });
     return;
@@ -66,10 +60,27 @@ router.get("/:orderId", async (req, res) => {
   res.json(order);
 });
 
-router.post("/:orderId/checkout", async (req, res) => {
+router.get("/:orderId", auth({ check: false }), async (req, res) => {
+  const orderId = req.params.orderId;
+  const order: Order | null = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+      OR: [{ userId: null }, { userId: req.userId }],
+    },
+    include: { Customization: true, Address: true, User: true },
+  });
+  console.log(order);
+  if (!order) {
+    res.status(404).json({ message: "Order not found" });
+    return;
+  }
+  res.json(order);
+});
+
+router.post("/:orderId/checkout", auth({ check: false }), async (req, res) => {
   const orderId = req.params.orderId;
   const order = await prisma.order.findUnique({
-    where: { id: orderId },
+    where: { id: orderId, OR: [{ userId: null }, { userId: req.userId }] },
     include: { Customization: true, Address: true },
   });
 
@@ -118,9 +129,13 @@ async function handlePaymentSuccess(event: Stripe.PaymentIntentSucceededEvent) {
   const { billing_details } = (object as any).charges.data[0];
   const { email, name } = billing_details as { email: string; name: string };
   const shipping = object.shipping!.address!;
-  const order = await prisma.order.findUnique({ where: { id: order_id } });
+  const order = await prisma.order.findUnique({
+    where: { id: order_id },
+    include: { User: true },
+  });
   if (!order) return false;
   if (order.state == "paid") return false;
+  if (order.User && order.User.email != email) return false;
   await prisma.order.update({
     where: { id: order_id },
     include: { User: true },
@@ -176,7 +191,7 @@ router.post("/callback", async (req, res) => {
   }
 });
 
-router.get("/", auth, async (req, res) => {
+router.get("/", auth({}), async (req, res) => {
   const { cursor, limit: take } = await z
     .object({
       cursor: z.string().nullish(),
