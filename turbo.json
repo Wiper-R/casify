@@ -24,7 +24,8 @@
     },
     "db:push": {
       "cache": false,
-      "dependsOn": ["^db:push"]
+      "dependsOn": ["^db:push"],
+      "persistent": true
     },
     "db:studio": {
       "cache": false,
@@ -33,6 +34,11 @@
     "db:reset": {
       "cache": false,
       "dependsOn": ["^db:reset"]
+    },
+    "cli:create-admin": {
+      "cache": false,
+      "dependsOn": ["^cli:create-admin"],
+      "persistent": true
     }
   }
 }

@@ -2,7 +2,8 @@
   "name": "http",
   "private": true,
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "cli:create-admin": "ts-node src/cli.ts create-admin"
   },
   "main": "./src/index.ts",
   "dependencies": {
@@ -10,9 +11,11 @@
     "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",
     "cloudinary": "^2.5.1",
+    "commander": "^13.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "express": "^5.0.0",
+    "inquirer": "^12.3.2",
     "jsonwebtoken": "^9.0.2",
     "resend": "^4.0.1",
     "stripe": "^17.5.0",

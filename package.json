@@ -5,7 +5,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:generate": "turbo db:generate",
     "db:push": "turbo db:push",
-    "dev": "turbo dev"
+    "db:studio": "turbo db:studio",
+    "dev": "turbo dev",
+    "create-admin": "turbo cli:create-admin"
   },
   "keywords": [],
   "author": "",
