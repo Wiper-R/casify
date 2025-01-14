@@ -16,7 +16,7 @@ export function Navbar() {
         <Link href={"/"}>
           <Image src={Casify} alt="Casify" width={40} />
         </Link>
-        <ul className="flex items-center -gap-4">
+        <ul className="flex items-center">
           {auth.state == "unauthenticated" ? (
             <>
               <li className={buttonVariants({ variant: "ghost" })}>
