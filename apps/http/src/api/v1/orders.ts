@@ -69,7 +69,6 @@ router.get("/:orderId", auth({ check: false }), async (req, res) => {
     },
     include: { Customization: true, Address: true, User: true },
   });
-  console.log(order);
   if (!order) {
     res.status(404).json({ message: "Order not found" });
     return;
@@ -194,8 +193,8 @@ router.post("/callback", async (req, res) => {
 router.get("/", auth({}), async (req, res) => {
   const { cursor, limit: take } = await z
     .object({
-      cursor: z.string().nullish(),
-      limit: z.number().default(10),
+      cursor: z.coerce.string().nullish(),
+      limit: z.coerce.number().default(2),
     })
     .parseAsync(req.query);
 

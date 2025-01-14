@@ -1,5 +1,6 @@
 "use client";
 import apiClient from "@/lib/api-client";
+import axios from "axios";
 import { useCallback, useState } from "react";
 
 export function useUpload() {
@@ -8,7 +9,6 @@ export function useUpload() {
   const upload = useCallback(
     async (file: File) => {
       setIsUploading(true);
-      setProgress(0);
       try {
         const res = await apiClient.post("/orders/upload");
         const { signature, timestamp } = res.data;
@@ -17,10 +17,11 @@ export function useUpload() {
         formData.append("timestamp", timestamp);
         formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!);
         formData.append("file", file);
-        const response = await apiClient.post(
+        const response = await axios.post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
           formData,
           {
+            headers: { "Content-Type": "multipart/form-data" },
             onUploadProgress: (event) => {
               setProgress(event.progress || 0);
             },
