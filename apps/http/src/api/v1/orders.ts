@@ -14,6 +14,8 @@ import {
 import Stripe from "stripe";
 import env from "../../env";
 import { Order } from "@repo/types";
+import { auth } from "../../middleware/auth";
+import z from "zod";
 
 export const router = Router();
 
@@ -172,4 +174,37 @@ router.post("/callback", async (req, res) => {
     console.error("Error processing webhook:", e);
     res.status(400).send("Webhook error");
   }
+});
+
+router.get("/", auth, async (req, res) => {
+  const { cursor, limit: take } = await z
+    .object({
+      cursor: z.string().nullish(),
+      limit: z.number().default(10),
+    })
+    .parseAsync(req.query);
+
+  var orders: Order[];
+  if (req.role == "user") {
+    orders = await prisma.order.findMany({
+      where: { userId: req.userId },
+      take,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { id: cursor } : undefined,
+      include: { Address: true, Customization: true, User: true },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+    });
+  } else {
+    orders = await prisma.order.findMany({
+      take,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { id: cursor } : undefined,
+      include: { Address: true, Customization: true, User: true },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+    });
+  }
+  res.json({
+    data: orders,
+    nextCursor: orders.length > 0 ? orders[orders.length - 1].id : null,
+  });
 });

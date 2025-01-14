@@ -90,7 +90,6 @@ export default function CustomizePage({
       renderedDimensions.height,
     );
     const url = canvas.toDataURL();
-    console.log(url.split(",")[1]);
     const blob = await base64ToBlob(url.split(",")[1], "image/png");
     const file = new File([blob], "upload.png");
     try {

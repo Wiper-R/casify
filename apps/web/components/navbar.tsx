@@ -4,9 +4,9 @@ import Link from "next/link";
 import Casify from "@/public/casify.png";
 import { MaxWidthWrapper } from "./max-width-wrapper";
 import { buttonVariants } from "./ui/button";
-import { Divider } from "./divider";
 import { useAuth } from "@/providers/auth.provider";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export function Navbar() {
   const { auth } = useAuth();
@@ -16,7 +16,7 @@ export function Navbar() {
         <Link href={"/"}>
           <Image src={Casify} alt="Casify" width={40} />
         </Link>
-        <ul className="flex gap-4 items-center">
+        <ul className="flex items-center -gap-4">
           {auth.state == "unauthenticated" ? (
             <>
               <li className={buttonVariants({ variant: "ghost" })}>
@@ -29,9 +29,22 @@ export function Navbar() {
           ) : auth.state == "loading" ? (
             <Loader2 className="animate-spin" />
           ) : (
-            <span>Hi, {auth.user?.name}</span>
+            <>
+              <li className={buttonVariants({ variant: "ghost" })}>
+                <Link href="/logout">Logout</Link>
+              </li>
+              {auth.user.role == "admin" ? (
+                <li className={buttonVariants({ variant: "ghost" })}>
+                  <Link href="/dashboard">Dashboard</Link>
+                </li>
+              ) : (
+                <li className={buttonVariants({ variant: "ghost" })}>
+                  <Link href="/dashboard">Dashboard</Link>
+                </li>
+              )}
+            </>
           )}
-          <Divider />
+          <Separator orientation="vertical" className="h-8 mx-5" />
           <li className={buttonVariants({ variant: "default" })}>
             <Link href="/create/upload">Create Case</Link>
           </li>
